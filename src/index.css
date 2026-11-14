@@ -110,6 +110,23 @@ summary:focus-visible {
   align-items: center;
 }
 
+.university-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+}
+
+.university-logo-small {
+  width: 24px;
+  height: 24px;
+}
+
 .brand {
   gap: 12px;
   flex-shrink: 0;

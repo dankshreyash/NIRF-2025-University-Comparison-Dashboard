@@ -1,4 +1,5 @@
 import type { UniversityData } from "../types";
+import { UniversityLogo } from "./UniversityLogo";
 
 interface UniversitySelectorProps {
   universities: UniversityData[];
@@ -41,6 +42,7 @@ export function UniversitySelector({
                 checked={selected.includes(shortName)}
                 onChange={() => toggle(shortName)}
               />
+              <UniversityLogo shortName={shortName} size="small" />
               <span>{university.institute.name}</span>
             </label>
           );

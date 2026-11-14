@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 import { PageHeader } from "../components/PageHeader";
+import { UniversityLogo } from "../components/UniversityLogo";
 import type { UniversityData } from "../types";
 import { formatINR, type CurrencyMode } from "../utils/format";
 import {
@@ -74,6 +75,7 @@ export function Compare({ universities, currencyMode }: CompareProps) {
                   disabled={!checked && picked.length >= 4}
                   onChange={() => toggle(shortName)}
                 />
+                <UniversityLogo shortName={shortName} size="small" />
                 <span className="color-dot" style={{ backgroundColor: getColor(universities, shortName) }} />
                 <span>{university.institute.name}</span>
               </label>
@@ -131,6 +133,7 @@ export function Compare({ universities, currencyMode }: CompareProps) {
                     <th>Metric</th>
                     {comparison.active.map((university) => (
                       <th key={university.institute.shortName}>
+                        <UniversityLogo shortName={university.institute.shortName} size="small" />
                         {university.institute.shortName}
                       </th>
                     ))}
@@ -187,7 +190,12 @@ export function Compare({ universities, currencyMode }: CompareProps) {
                 <tbody>
                   {comparison.active.map((university) => (
                     <tr key={university.institute.shortName}>
-                      <td>{university.institute.name}</td>
+                      <td>
+                        <span className="table-university">
+                          <UniversityLogo shortName={university.institute.shortName} size="small" />
+                          {university.institute.name}
+                        </span>
+                      </td>
                       <td>{formatNumber(totalStudents(university))}</td>
                       <td>{formatNumber(facultyCount(university))}</td>
                       <td>{formatNumber(phdStudentCount(university))}</td>

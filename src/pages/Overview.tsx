@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { MetricCard } from "../components/MetricCard";
 import { PageHeader } from "../components/PageHeader";
+import { UniversityLogo } from "../components/UniversityLogo";
 import type { UniversityData } from "../types";
 import { formatINR, type CurrencyMode } from "../utils/format";
 import {
@@ -88,6 +89,7 @@ export function Overview({ universities, currencyMode }: OverviewProps) {
                 <section className="university-kpi-card" key={shortName}>
                   <div className="university-kpi-title">
                     <span className="color-dot" style={{ backgroundColor: getColor(universities, shortName) }} />
+                    <UniversityLogo shortName={shortName} />
                     <div>
                       <strong>{shortName}</strong>
                       <span>{university.institute.name}</span>
@@ -143,6 +145,7 @@ export function Overview({ universities, currencyMode }: OverviewProps) {
                       <td>
                         <span className="table-university">
                           <span className="color-dot" style={{ backgroundColor: getColor(universities, row.university.institute.shortName) }} />
+                          <UniversityLogo shortName={row.university.institute.shortName} size="small" />
                           {row.university.institute.name}
                         </span>
                       </td>
