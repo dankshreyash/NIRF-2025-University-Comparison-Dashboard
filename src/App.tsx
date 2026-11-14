@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { UniversitySelector } from "./components/UniversitySelector";
+import { useEffect, useState } from "react";
 import { Compare } from "./pages/Compare";
 import { Faculty } from "./pages/Faculty";
 import { Infrastructure } from "./pages/Infrastructure";
@@ -9,7 +8,6 @@ import { ResearchFinance } from "./pages/ResearchFinance";
 import { Students } from "./pages/Students";
 import type { CombinedData, UniversityData } from "./types";
 import type { CurrencyMode } from "./utils/format";
-import { availableYears } from "./utils/metrics";
 
 type PageId =
   | "overview"
@@ -34,11 +32,6 @@ export default function App() {
   const [data, setData] = useState<CombinedData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activePage, setActivePage] = useState<PageId>("overview");
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
-  const [selectedYear, setSelectedYear] = useState("All years");
-  const [currencyMode, setCurrencyMode] = useState<CurrencyMode>(
-    () => localStorage.getItem("nirf-currency") === "full" ? "full" : "crore",
-  );
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("nirf-theme") === "dark",
   );
@@ -58,9 +51,6 @@ export default function App() {
         }
         if (active) {
           setData(result);
-          setSelectedNames(
-            result.universities.map((university) => university.institute.shortName),
-          );
         }
       })
       .catch((error: unknown) => {
@@ -80,20 +70,8 @@ export default function App() {
     localStorage.setItem("nirf-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
-  useEffect(() => {
-    document.documentElement.dataset.currencyMode = currencyMode;
-    localStorage.setItem("nirf-currency", currencyMode);
-  }, [currencyMode]);
-
   const universities = data?.universities ?? [];
-  const years = useMemo(() => availableYears(universities), [universities]);
-  const selectedUniversities = useMemo(
-    () =>
-      universities.filter((university) =>
-        selectedNames.includes(university.institute.shortName),
-      ),
-    [selectedNames, universities],
-  );
+  const currencyMode: CurrencyMode = "crore";
 
   if (loadError) {
     return (
@@ -119,8 +97,8 @@ export default function App() {
 
   const pageContent = renderPage(
     activePage,
-    selectedUniversities,
-    selectedYear,
+    universities,
+    "All years",
     currencyMode,
   );
 
@@ -135,33 +113,6 @@ export default function App() {
           </div>
         </div>
         <div className="topbar-controls">
-          <UniversitySelector
-            universities={universities}
-            selected={selectedNames}
-            onChange={setSelectedNames}
-          />
-          <label className="select-field year-selector">
-            Reporting year
-            <select value={selectedYear} onChange={(event) => setSelectedYear(event.target.value)}>
-              <option>All years</option>
-              {years.map((year) => (
-                <option key={year}>{year}</option>
-              ))}
-            </select>
-          </label>
-          <div className="button-group currency-toggle" role="group" aria-label="Currency display">
-            {(["crore", "full"] as const).map((mode) => (
-              <button
-                key={mode}
-                className={`button ${currencyMode === mode ? "button-primary" : "button-muted"}`}
-                type="button"
-                aria-pressed={currencyMode === mode}
-                onClick={() => setCurrencyMode(mode)}
-              >
-                {mode === "crore" ? "Crore" : "Full"}
-              </button>
-            ))}
-          </div>
           <button
             className="button button-muted theme-toggle"
             type="button"
@@ -198,7 +149,7 @@ export default function App() {
             and are not independently audited.
           </p>
         </div>
-        <span>{selectedUniversities.length} of {universities.length} universities selected</span>
+        <span>{universities.length} universities included</span>
       </footer>
     </div>
   );

@@ -49,7 +49,7 @@
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   color: var(--text);
   background: var(--page);
@@ -472,6 +472,10 @@ summary:focus-visible {
   white-space: nowrap;
 }
 
+.metric-card strong[title="Not reported"] {
+  font-size: 11px;
+}
+
 .metric-hint {
   display: block;
   margin-top: 5px;
@@ -547,13 +551,7 @@ summary:focus-visible {
 }
 
 .university-kpi-grid .metric-card strong[title="Not reported"] {
-  font-size: 14px;
-}
-
-@media (min-width: 1200px) and (max-width: 1399px) {
-  :root[data-currency-mode="full"] .university-kpi-grid .metric-card strong {
-    font-size: 11px;
-  }
+  font-size: 11px;
 }
 
 .university-kpi-grid .metric-label {
@@ -756,6 +754,10 @@ tbody tr:hover {
 
 .university-summary-card .metric-card strong {
   font-size: 13px;
+}
+
+.university-summary-card .metric-card strong[title="Not reported"] {
+  font-size: 11px;
 }
 
 .select-field select {
@@ -973,6 +975,22 @@ tbody tr:hover {
   }
 }
 
+@media (max-width: 1100px) {
+  .chart-area .recharts-tooltip-wrapper,
+  .compare-radar .recharts-tooltip-wrapper {
+    left: auto !important;
+    right: 0 !important;
+    max-width: calc(100% - 8px);
+    transform: translateY(8px) !important;
+  }
+
+  .chart-area .recharts-default-tooltip,
+  .compare-radar .recharts-default-tooltip {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (max-width: 620px) {
   .app-shell {
     padding-right: 12px;
@@ -1050,6 +1068,13 @@ tbody tr:hover {
   .search-field input {
     width: 100%;
     min-width: 0;
+  }
+
+  .faculty-filters .select-field,
+  .faculty-filters .select-field select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .about-footer {

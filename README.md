@@ -45,8 +45,8 @@ The production files are written to `dist/`.
 ## Dashboard features
 
 - Overview, students, placements, research and finance, faculty, compare, and infrastructure/sustainability pages.
-- University selection, an applicable-year filter, and light/dark mode.
-- Self-hosted Inter and Plus Jakarta Sans variable fonts; the global currency toggle switches between Crore and Full INR.
+- All seven universities are shown across all reporting years, with light/dark mode.
+- Self-hosted Inter and Plus Jakarta Sans variable fonts; monetary values default to Crore and include the full INR figure on hover.
 - CSV/PNG export on charts and CSV export for filtered faculty records.
 - Derived ratios and rates are centralized in `src/utils/metrics.ts`.
 
