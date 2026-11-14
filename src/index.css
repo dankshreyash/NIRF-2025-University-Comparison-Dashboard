@@ -152,6 +152,17 @@ summary:focus-visible {
   gap: 10px;
 }
 
+.topbar-controls .year-selector {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.topbar-controls .year-selector select {
+  min-width: 120px;
+}
+
 .button {
   border: 1px solid var(--border);
   border-radius: 9px;
@@ -904,15 +915,31 @@ tbody tr:hover {
   }
 
   .topbar-controls {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .year-selector {
+    flex: 0 0 auto;
+  }
+
+  .year-selector select {
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar-controls {
     flex-wrap: wrap;
   }
 
   .year-selector {
-    flex: 1 1 125px;
+    flex: 1 1 100%;
+    justify-content: space-between;
   }
 
   .year-selector select {
-    width: 100%;
+    width: auto;
   }
 
   .page-heading {
