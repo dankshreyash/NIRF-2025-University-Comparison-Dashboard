@@ -501,6 +501,10 @@ summary:focus-visible {
   font-weight: 600;
 }
 
+.university-kpi-title > div > span {
+  font-family: var(--font-display);
+}
+
 .university-kpi-title span {
   max-width: 100%;
   margin-top: 2px;
@@ -522,7 +526,17 @@ summary:focus-visible {
 }
 
 .university-kpi-grid .metric-card strong {
-  font-size: 15px;
+  font-size: 14.5px;
+}
+
+.university-kpi-grid .metric-card strong[title="Not reported"] {
+  font-size: 14px;
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  :root[data-currency-mode="full"] .university-kpi-grid .metric-card strong {
+    font-size: 11px;
+  }
 }
 
 .university-kpi-grid .metric-label {
@@ -950,15 +964,21 @@ tbody tr:hover {
 
   .topbar-controls {
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 6px;
   }
 
   .year-selector {
     flex: 0 0 auto;
   }
 
-  .year-selector select {
+  .topbar-controls .year-selector select {
     width: auto;
+    min-width: 100px;
+  }
+
+  .currency-toggle .button {
+    padding-right: 8px;
+    padding-left: 8px;
   }
 }
 

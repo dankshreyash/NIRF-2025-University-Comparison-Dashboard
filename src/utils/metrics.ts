@@ -5,6 +5,7 @@ import type {
   StudentStrength,
   UniversityData,
 } from "../types";
+import { CRORE, type CurrencyMode } from "./format";
 
 export const UNIVERSITY_COLORS = [
   "#16283f",
@@ -16,8 +17,6 @@ export const UNIVERSITY_COLORS = [
   "#7b6178",
   "#425466",
 ];
-
-export const CRORE = 10_000_000;
 
 export function isNumber(value: Numeric | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value);
@@ -285,7 +284,7 @@ function annualSeries(
   property: "sponsoredResearch" | "consultancy" | "executiveDevelopment",
   field: keyof AnnualMetric,
   selectedYear: string,
-  unit: "INR" | "Crore",
+  unit: CurrencyMode,
 ) {
   const yearSet = new Set<string>();
   const values = universities.map((university) => {
@@ -304,7 +303,7 @@ function annualSeries(
         const value = rows.find((row) => row.financialYear === year)?.[field];
         result[university.institute.shortName] =
           isNumber(value as Numeric)
-            ? unit === "Crore"
+            ? unit === "crore"
               ? (value as number) / CRORE
               : (value as number)
             : null;
@@ -316,7 +315,7 @@ function annualSeries(
 export function sponsoredResearchRows(
   universities: UniversityData[],
   selectedYear: string,
-  unit: "INR" | "Crore",
+  unit: CurrencyMode,
 ) {
   return annualSeries(
     universities,
@@ -330,7 +329,7 @@ export function sponsoredResearchRows(
 export function consultancyRows(
   universities: UniversityData[],
   selectedYear: string,
-  unit: "INR" | "Crore",
+  unit: CurrencyMode,
 ) {
   return annualSeries(
     universities,
@@ -344,7 +343,7 @@ export function consultancyRows(
 export function edpEarningsRows(
   universities: UniversityData[],
   selectedYear: string,
-  unit: "INR" | "Crore",
+  unit: CurrencyMode,
 ) {
   return annualSeries(
     universities,
@@ -419,7 +418,7 @@ function sumObjectValues(
 export function financeRows(
   universities: UniversityData[],
   selectedYear: string,
-  unit: "INR" | "Crore",
+  unit: CurrencyMode,
 ) {
   const years = new Set<string>();
   const records = universities.map((university) => {
@@ -439,9 +438,9 @@ export function financeRows(
         const capex = source ? sumObjectValues(source.capex) : null;
         const opex = source ? sumObjectValues(source.opex) : null;
         result[`${university.institute.shortName} capex`] =
-          isNumber(capex) ? (unit === "Crore" ? capex / CRORE : capex) : null;
+          isNumber(capex) ? (unit === "crore" ? capex / CRORE : capex) : null;
         result[`${university.institute.shortName} opex`] =
-          isNumber(opex) ? (unit === "Crore" ? opex / CRORE : opex) : null;
+          isNumber(opex) ? (unit === "crore" ? opex / CRORE : opex) : null;
       }
       return result;
     });
@@ -670,9 +669,9 @@ export function getColor(_universities: UniversityData[], shortName: string): st
   return UNIVERSITY_COLORS[stableIndex % UNIVERSITY_COLORS.length];
 }
 
-export function currencyValue(value: Numeric, unit: "INR" | "Crore"): Numeric {
+export function currencyValue(value: Numeric, unit: CurrencyMode): Numeric {
   if (!isNumber(value)) return null;
-  return unit === "Crore" ? value / CRORE : value;
+  return unit === "crore" ? value / CRORE : value;
 }
 
 export function formatNumber(value: Numeric, maximumFractionDigits = 0): string {
@@ -680,18 +679,6 @@ export function formatNumber(value: Numeric, maximumFractionDigits = 0): string 
   return new Intl.NumberFormat("en-IN", {
     maximumFractionDigits,
   }).format(value);
-}
-
-export function formatCurrency(
-  value: Numeric,
-  unit: "INR" | "Crore" = "INR",
-  maximumFractionDigits = 2,
-): string {
-  if (!isNumber(value)) return "Not reported";
-  if (unit === "Crore") {
-    return `₹${formatNumber(value / CRORE, maximumFractionDigits)} Cr`;
-  }
-  return `₹${formatNumber(value, 0)}`;
 }
 
 export function formatPercent(value: Numeric, maximumFractionDigits = 1): string {

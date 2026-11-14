@@ -11,10 +11,10 @@ import {
 } from "recharts";
 import { PageHeader } from "../components/PageHeader";
 import type { UniversityData } from "../types";
+import { formatINR, type CurrencyMode } from "../utils/format";
 import {
   comparisonMetrics,
   facultyCount,
-  formatCurrency,
   formatNumber,
   formatPercent,
   getColor,
@@ -27,9 +27,10 @@ import {
 
 interface CompareProps {
   universities: UniversityData[];
+  currencyMode: CurrencyMode;
 }
 
-export function Compare({ universities }: CompareProps) {
+export function Compare({ universities, currencyMode }: CompareProps) {
   const [picked, setPicked] = useState<string[]>(
     universities.slice(0, 4).map((university) => university.institute.shortName),
   );
@@ -145,8 +146,15 @@ export function Compare({ universities }: CompareProps) {
                         );
                         const value = metric.values[index] ?? null;
                         return (
-                          <td key={university.institute.shortName}>
-                            {formatMetricValue(metric.key, value)}
+                          <td
+                            key={university.institute.shortName}
+                            title={
+                              metric.key === "research" || metric.key === "finance"
+                                ? formatINR(value, "full")
+                                : undefined
+                            }
+                          >
+                            {formatMetricValue(metric.key, value, currencyMode)}
                           </td>
                         );
                       })}
@@ -184,7 +192,9 @@ export function Compare({ universities }: CompareProps) {
                       <td>{formatNumber(facultyCount(university))}</td>
                       <td>{formatNumber(phdStudentCount(university))}</td>
                       <td>{formatPercent(overallPlacementRate(university))}</td>
-                      <td>{formatCurrency(totalSponsoredResearch(university))}</td>
+                      <td title={formatINR(totalSponsoredResearch(university), "full")}>
+                        {formatINR(totalSponsoredResearch(university), currencyMode)}
+                      </td>
                       <td>{formatNumber(totalPatentsGranted(university))}</td>
                     </tr>
                   ))}
@@ -198,8 +208,14 @@ export function Compare({ universities }: CompareProps) {
   );
 }
 
-function formatMetricValue(key: string, value: number | null): string {
+function formatMetricValue(
+  key: string,
+  value: number | null,
+  currencyMode: CurrencyMode,
+): string {
   if (key === "placement") return formatPercent(value);
-  if (key === "research" || key === "finance") return formatCurrency(value);
+  if (key === "research" || key === "finance") {
+    return formatINR(value, currencyMode);
+  }
   return formatNumber(value, key === "naac" ? 2 : 0);
 }

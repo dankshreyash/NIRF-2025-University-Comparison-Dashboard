@@ -8,6 +8,7 @@ import { Placement } from "./pages/Placement";
 import { ResearchFinance } from "./pages/ResearchFinance";
 import { Students } from "./pages/Students";
 import type { CombinedData, UniversityData } from "./types";
+import type { CurrencyMode } from "./utils/format";
 import { availableYears } from "./utils/metrics";
 
 type PageId =
@@ -35,6 +36,9 @@ export default function App() {
   const [activePage, setActivePage] = useState<PageId>("overview");
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState("All years");
+  const [currencyMode, setCurrencyMode] = useState<CurrencyMode>(
+    () => localStorage.getItem("nirf-currency") === "full" ? "full" : "crore",
+  );
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("nirf-theme") === "dark",
   );
@@ -76,6 +80,11 @@ export default function App() {
     localStorage.setItem("nirf-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  useEffect(() => {
+    document.documentElement.dataset.currencyMode = currencyMode;
+    localStorage.setItem("nirf-currency", currencyMode);
+  }, [currencyMode]);
+
   const universities = data?.universities ?? [];
   const years = useMemo(() => availableYears(universities), [universities]);
   const selectedUniversities = useMemo(
@@ -108,7 +117,12 @@ export default function App() {
     );
   }
 
-  const pageContent = renderPage(activePage, selectedUniversities, selectedYear);
+  const pageContent = renderPage(
+    activePage,
+    selectedUniversities,
+    selectedYear,
+    currencyMode,
+  );
 
   return (
     <div className="app-shell">
@@ -135,6 +149,19 @@ export default function App() {
               ))}
             </select>
           </label>
+          <div className="button-group currency-toggle" role="group" aria-label="Currency display">
+            {(["crore", "full"] as const).map((mode) => (
+              <button
+                key={mode}
+                className={`button ${currencyMode === mode ? "button-primary" : "button-muted"}`}
+                type="button"
+                aria-pressed={currencyMode === mode}
+                onClick={() => setCurrencyMode(mode)}
+              >
+                {mode === "crore" ? "Crore" : "Full"}
+              </button>
+            ))}
+          </div>
           <button
             className="button button-muted theme-toggle"
             type="button"
@@ -181,20 +208,33 @@ function renderPage(
   page: PageId,
   universities: UniversityData[],
   selectedYear: string,
+  currencyMode: CurrencyMode,
 ) {
   switch (page) {
     case "overview":
-      return <Overview universities={universities} />;
+      return <Overview universities={universities} currencyMode={currencyMode} />;
     case "students":
       return <Students universities={universities} />;
     case "placement":
-      return <Placement universities={universities} selectedYear={selectedYear} />;
+      return (
+        <Placement
+          universities={universities}
+          selectedYear={selectedYear}
+          currencyMode={currencyMode}
+        />
+      );
     case "research":
-      return <ResearchFinance universities={universities} selectedYear={selectedYear} />;
+      return (
+        <ResearchFinance
+          universities={universities}
+          selectedYear={selectedYear}
+          currencyMode={currencyMode}
+        />
+      );
     case "faculty":
       return <Faculty universities={universities} />;
     case "compare":
-      return <Compare universities={universities} />;
+      return <Compare universities={universities} currencyMode={currencyMode} />;
     case "infrastructure":
       return <Infrastructure universities={universities} />;
   }

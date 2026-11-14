@@ -46,7 +46,8 @@ The production files are written to `dist/`.
 
 - Overview, students, placements, research and finance, faculty, compare, and infrastructure/sustainability pages.
 - University selection, an applicable-year filter, and light/dark mode.
+- Self-hosted Inter and Plus Jakarta Sans variable fonts; the global currency toggle switches between Crore and Full INR.
 - CSV/PNG export on charts and CSV export for filtered faculty records.
 - Derived ratios and rates are centralized in `src/utils/metrics.ts`.
 
-All currency values in JSON are plain INR numbers. Crore display uses INR divided by 10,000,000. The dashboard displays unavailable values as “Not reported.”
+All currency values in JSON are plain INR numbers. Crore display uses INR divided by 10,000,000, with sub-crore amounts shown in lakhs; hover monetary values to see the full INR figure. The dashboard displays unavailable values as “Not reported.”

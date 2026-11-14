@@ -15,9 +15,9 @@ import {
 import { ChartPanel } from "../components/ChartPanel";
 import { PageHeader } from "../components/PageHeader";
 import type { UniversityData } from "../types";
+import { formatINR, type CurrencyMode } from "../utils/format";
 import {
   availableProgramTypes,
-  formatCurrency,
   formatNumber,
   formatPercent,
   getColor,
@@ -30,9 +30,14 @@ import {
 interface PlacementProps {
   universities: UniversityData[];
   selectedYear: string;
+  currencyMode: CurrencyMode;
 }
 
-export function Placement({ universities, selectedYear }: PlacementProps) {
+export function Placement({
+  universities,
+  selectedYear,
+  currencyMode,
+}: PlacementProps) {
   const programs = availableProgramTypes(universities);
   const [programType, setProgramType] = useState(programs[0] ?? "");
   const selectedProgram = programs.includes(programType)
@@ -115,8 +120,8 @@ export function Placement({ universities, selectedYear }: PlacementProps) {
                 <LineChart data={salaries} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
-                  <YAxis tickFormatter={(value) => `₹${Number(value).toLocaleString("en-IN")}`} />
-                  <Tooltip formatter={(value) => formatCurrency(typeof value === "number" ? value : null)} />
+                  <YAxis tickFormatter={(value) => formatINR(typeof value === "number" ? value : null, currencyMode)} />
+                  <Tooltip formatter={(value) => salaryTooltip(value, currencyMode)} />
                   <Legend />
                   {universities.map((university) => {
                     const shortName = university.institute.shortName;
@@ -191,7 +196,9 @@ export function Placement({ universities, selectedYear }: PlacementProps) {
                       <td>{row.graduationAcademicYear ?? "Not reported"}</td>
                       <td>{formatNumber(row.graduatedMinimumTime)}</td>
                       <td>{formatNumber(row.placed)}</td>
-                      <td>{formatCurrency(row.medianSalaryInr)}</td>
+                      <td title={formatINR(row.medianSalaryInr, "full")}>
+                        {formatINR(row.medianSalaryInr, currencyMode)}
+                      </td>
                       <td>{formatNumber(row.higherStudies)}</td>
                     </tr>
                   ))}
@@ -202,5 +209,14 @@ export function Placement({ universities, selectedYear }: PlacementProps) {
         </>
       )}
     </div>
+  );
+}
+
+function salaryTooltip(value: unknown, currencyMode: CurrencyMode) {
+  const amount = typeof value === "number" ? value : null;
+  return (
+    <span title={formatINR(amount, "full")}>
+      {formatINR(amount, currencyMode)}
+    </span>
   );
 }

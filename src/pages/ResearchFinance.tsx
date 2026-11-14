@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -15,9 +14,9 @@ import { ChartPanel } from "../components/ChartPanel";
 import { MetricCard } from "../components/MetricCard";
 import { PageHeader } from "../components/PageHeader";
 import type { UniversityData } from "../types";
+import { CRORE, formatINR, type CurrencyMode } from "../utils/format";
 import {
   consultancyRows,
-  formatCurrency,
   formatNumber,
   getColor,
   patentSeriesRows,
@@ -33,39 +32,24 @@ import {
 interface ResearchFinanceProps {
   universities: UniversityData[];
   selectedYear: string;
+  currencyMode: CurrencyMode;
 }
-
-type CurrencyUnit = "INR" | "Crore";
 
 export function ResearchFinance({
   universities,
   selectedYear,
+  currencyMode,
 }: ResearchFinanceProps) {
-  const [unit, setUnit] = useState<CurrencyUnit>("Crore");
-  const sponsored = sponsoredResearchRows(universities, selectedYear, unit);
-  const consultancy = consultancyRows(universities, selectedYear, unit);
-  const edp = edpEarningsRows(universities, selectedYear, unit);
+  const sponsored = sponsoredResearchRows(universities, selectedYear, currencyMode);
+  const consultancy = consultancyRows(universities, selectedYear, currencyMode);
+  const edp = edpEarningsRows(universities, selectedYear, currencyMode);
   const patents = patentSeriesRows(universities, selectedYear);
-  const finance = financeRows(universities, selectedYear, unit);
-  const unitButton = (
-    <div className="button-group" aria-label="Currency display unit">
-      {(["Crore", "INR"] as const).map((value) => (
-        <button
-          className={`button ${unit === value ? "button-primary" : "button-muted"}`}
-          key={value}
-          type="button"
-          onClick={() => setUnit(value)}
-        >
-          {value}
-        </button>
-      ))}
-    </div>
-  );
+  const finance = financeRows(universities, selectedYear, currencyMode);
   const researchSummary = universities.map((university) => ({
     university: university.institute.shortName,
-    research: formatCurrency(totalSponsoredResearch(university), unit),
-    consultancy: formatCurrency(totalConsultancyAmount(university), unit),
-    edp: formatCurrency(totalEdpEarnings(university), unit),
+    research: totalSponsoredResearch(university),
+    consultancy: totalConsultancyAmount(university),
+    edp: totalEdpEarnings(university),
     patents: formatNumber(totalPatentsGranted(university)),
   }));
   const activityRows = universities.flatMap((university) => {
@@ -102,7 +86,6 @@ export function ResearchFinance({
       <PageHeader
         title="Research & Finance"
         description="Three-year research, consultancy, executive education, patent, capital, and operating expenditure trends."
-        actions={unitButton}
       />
       <div className="metric-grid">
         {researchSummary.map((row) => {
@@ -112,10 +95,27 @@ export function ResearchFinance({
           return (
             <section className="university-summary-card" key={row.university}>
               <strong>{row.university}</strong>
-              <MetricCard label="Sponsored research · 3 yrs" value={row.research} />
-              <MetricCard label="Consultancy · 3 yrs" value={row.consultancy} />
-              <MetricCard label="EDP earnings · 3 yrs" value={row.edp} />
-              <MetricCard label="Patents granted · 3 yrs" value={row.patents} />
+              <MetricCard
+                label="Research (3 yrs)"
+                labelTitle="Sponsored research · 3 yrs"
+                value={formatINR(row.research, currencyMode)}
+                valueTitle={formatINR(row.research, "full")}
+              />
+              <MetricCard
+                label="Consultancy · 3 yrs"
+                value={formatINR(row.consultancy, currencyMode)}
+                valueTitle={formatINR(row.consultancy, "full")}
+              />
+              <MetricCard
+                label="EDP earnings · 3 yrs"
+                value={formatINR(row.edp, currencyMode)}
+                valueTitle={formatINR(row.edp, "full")}
+              />
+              <MetricCard
+                label="Patents (3 yrs)"
+                labelTitle="Patents granted · 3 yrs"
+                value={row.patents}
+              />
               {university && (
                 <span className="summary-color" style={{ backgroundColor: getColor(universities, row.university) }} />
               )}
@@ -126,7 +126,7 @@ export function ResearchFinance({
       <div className="chart-grid">
         <ChartPanel
           title="Sponsored research amount"
-          description={`Reported total received · ${unit}`}
+          description={`Reported total received · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="sponsored-research"
           data={sponsored}
         >
@@ -134,8 +134,8 @@ export function ResearchFinance({
             <LineChart data={sponsored} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => unit === "Crore" ? `${value} Cr` : `₹${Number(value).toLocaleString("en-IN")}`} />
-              <Tooltip formatter={(value) => amountLabel(value, unit)} />
+              <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
+              <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
               <Legend />
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
@@ -156,7 +156,7 @@ export function ResearchFinance({
         </ChartPanel>
         <ChartPanel
           title="Consultancy amount"
-          description={`Reported total received · ${unit}`}
+          description={`Reported total received · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="consultancy-amount"
           data={consultancy}
         >
@@ -164,8 +164,8 @@ export function ResearchFinance({
             <LineChart data={consultancy} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => unit === "Crore" ? `${value} Cr` : `₹${Number(value).toLocaleString("en-IN")}`} />
-              <Tooltip formatter={(value) => amountLabel(value, unit)} />
+              <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
+              <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
               <Legend />
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
@@ -186,7 +186,7 @@ export function ResearchFinance({
         </ChartPanel>
         <ChartPanel
           title="Executive development earnings"
-          description={`Reported annual earnings · ${unit}`}
+          description={`Reported annual earnings · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="edp-earnings"
           data={edp}
         >
@@ -194,8 +194,8 @@ export function ResearchFinance({
             <LineChart data={edp} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => unit === "Crore" ? `${value} Cr` : `₹${Number(value).toLocaleString("en-IN")}`} />
-              <Tooltip formatter={(value) => amountLabel(value, unit)} />
+              <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
+              <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
               <Legend />
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
@@ -256,7 +256,7 @@ export function ResearchFinance({
         </ChartPanel>
         <ChartPanel
           title="Capex vs opex"
-          description={`Total by category · ${unit}`}
+          description={`Total by category · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="capex-opex"
           data={finance}
         >
@@ -264,8 +264,8 @@ export function ResearchFinance({
             <BarChart data={finance} margin={{ top: 16, right: 24, left: 12, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => unit === "Crore" ? `${value} Cr` : `₹${Number(value).toLocaleString("en-IN")}`} />
-              <Tooltip formatter={(value) => amountLabel(value, unit)} />
+              <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
+              <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
               <Legend />
               {universities.flatMap((university) => {
                 const shortName = university.institute.shortName;
@@ -333,9 +333,16 @@ export function ResearchFinance({
   );
 }
 
-function amountLabel(value: unknown, unit: CurrencyUnit): string {
-  if (typeof value !== "number") return "Not reported";
-  return unit === "Crore"
-    ? `₹${formatNumber(value, 2)} Cr`
-    : formatCurrency(value, unit);
+function chartAmount(value: unknown, mode: CurrencyMode): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return mode === "crore" ? value * CRORE : value;
+}
+
+function amountTooltip(value: unknown, mode: CurrencyMode) {
+  const amount = chartAmount(value, mode);
+  return (
+    <span title={formatINR(amount, "full")}>
+      {formatINR(amount, mode)}
+    </span>
+  );
 }

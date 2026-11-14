@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { MetricCard } from "../components/MetricCard";
 import { PageHeader } from "../components/PageHeader";
 import type { UniversityData } from "../types";
+import { formatINR, type CurrencyMode } from "../utils/format";
 import {
   facultyCount,
-  formatCurrency,
   formatNumber,
   getColor,
   phdStudentCount,
@@ -23,9 +23,10 @@ type SortKey =
 
 interface OverviewProps {
   universities: UniversityData[];
+  currencyMode: CurrencyMode;
 }
 
-export function Overview({ universities }: OverviewProps) {
+export function Overview({ universities, currencyMode }: OverviewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("students");
   const [descending, setDescending] = useState(true);
 
@@ -97,8 +98,17 @@ export function Overview({ universities }: OverviewProps) {
                     <MetricCard label="Faculty" value={formatNumber(facultyCount(university))} />
                     <MetricCard label="Ph.D. students" value={formatNumber(phdStudentCount(university))} />
                     <MetricCard label="NAAC CGPA" value={formatNumber(university.naac.cgpa, 2)} />
-                    <MetricCard label="Sponsored research · 3 yrs" value={formatCurrency(totalSponsoredResearch(university))} />
-                    <MetricCard label="Patents granted · 3 yrs" value={formatNumber(totalPatentsGranted(university))} />
+                    <MetricCard
+                      label="Research (3 yrs)"
+                      labelTitle="Sponsored research · 3 yrs"
+                      value={formatINR(totalSponsoredResearch(university), currencyMode)}
+                      valueTitle={formatINR(totalSponsoredResearch(university), "full")}
+                    />
+                    <MetricCard
+                      label="Patents (3 yrs)"
+                      labelTitle="Patents granted · 3 yrs"
+                      value={formatNumber(totalPatentsGranted(university))}
+                    />
                   </div>
                 </section>
               );
@@ -140,7 +150,9 @@ export function Overview({ universities }: OverviewProps) {
                       <td>{formatNumber(row.faculty)}</td>
                       <td>{formatNumber(row.phd)}</td>
                       <td>{formatNumber(row.cgpa, 2)}</td>
-                      <td>{formatCurrency(row.research)}</td>
+                      <td title={formatINR(row.research, "full")}>
+                        {formatINR(row.research, currencyMode)}
+                      </td>
                       <td>{formatNumber(row.patents)}</td>
                     </tr>
                   ))}
