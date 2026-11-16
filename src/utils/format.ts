@@ -8,11 +8,6 @@ const indianInteger = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
 });
 
-const croreOneDecimal = new Intl.NumberFormat("en-IN", {
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-
 const croreTwoDecimals = new Intl.NumberFormat("en-IN", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -30,13 +25,19 @@ export function formatINR(
     return `₹${indianInteger.format(value)}`;
   }
 
-  if (value < CRORE) {
-    return `₹${croreOneDecimal.format(value / 1_00_000)} L`;
+  // In "crore" mode, always normalize to ₹ Cr so all values are directly comparable.
+  const inCr = value / CRORE;
+  if (inCr < 10) {
+    return `₹${croreTwoDecimals.format(inCr)} Cr`;
   }
 
-  if (value < CRORE * 10) {
-    return `₹${croreTwoDecimals.format(value / CRORE)} Cr`;
-  }
+  return `₹${croreTwoDecimals.format(inCr)} Cr`;
+}
 
-  return `₹${croreOneDecimal.format(value / CRORE)} Cr`;
+export function formatCrore(value: Numeric | undefined): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return "Not reported";
+  }
+  const inCr = value / CRORE;
+  return `₹${croreTwoDecimals.format(inCr)} Cr`;
 }

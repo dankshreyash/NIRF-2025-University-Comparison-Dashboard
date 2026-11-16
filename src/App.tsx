@@ -149,8 +149,7 @@ export default function App() {
         <div>
           <strong>About data</strong>
           <p>
-            Source: NIRF 2025 submitted institute data. Figures are institute-reported
-            and are not independently audited.
+            Source: NIRF 2025 submitted institute data. Figures are institute-reported.
           </p>
         </div>
         <span>{universities.length} universities included</span>

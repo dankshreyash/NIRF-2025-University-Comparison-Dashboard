@@ -10,6 +10,7 @@ interface ChartPanelProps {
   data: ExportRow[];
   children: ReactNode;
   emptyMessage?: string;
+  className?: string;
 }
 
 function csvEscape(value: ExportRow[string]): string {
@@ -56,6 +57,7 @@ export function ChartPanel({
   data,
   children,
   emptyMessage = "Not reported for the current selection.",
+  className = "",
 }: ChartPanelProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -83,7 +85,7 @@ export function ChartPanel({
   }
 
   return (
-    <section className="panel chart-panel">
+    <section className={`panel chart-panel ${className}`.trim()}>
       <div className="panel-heading">
         <div>
           <h2>{title}</h2>

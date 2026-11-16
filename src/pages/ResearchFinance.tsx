@@ -3,8 +3,6 @@ import {
   BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -26,7 +24,6 @@ import {
   totalEdpEarnings,
   sponsoredResearchRows,
   edpEarningsRows,
-  financeRows,
 } from "../utils/metrics";
 
 interface ResearchFinanceProps {
@@ -44,7 +41,6 @@ export function ResearchFinance({
   const consultancy = consultancyRows(universities, selectedYear, currencyMode);
   const edp = edpEarningsRows(universities, selectedYear, currencyMode);
   const patents = patentSeriesRows(universities, selectedYear);
-  const finance = financeRows(universities, selectedYear, currencyMode);
   const researchSummary = universities.map((university) => ({
     university: university.institute.shortName,
     research: totalSponsoredResearch(university),
@@ -129,10 +125,11 @@ export function ResearchFinance({
           description={`Reported total received · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="sponsored-research"
           data={sponsored}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sponsored} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <BarChart data={sponsored} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="year" />
               <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
               <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
@@ -140,18 +137,16 @@ export function ResearchFinance({
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
                 return (
-                  <Line
+                  <Bar
                     key={shortName}
-                    type="monotone"
                     dataKey={shortName}
                     name={shortName}
-                    stroke={getColor(universities, shortName)}
-                    strokeWidth={2}
-                    connectNulls={false}
+                    fill={getColor(universities, shortName)}
+                    radius={[3, 3, 0, 0]}
                   />
                 );
               })}
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel
@@ -159,10 +154,11 @@ export function ResearchFinance({
           description={`Reported total received · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="consultancy-amount"
           data={consultancy}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={consultancy} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <BarChart data={consultancy} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="year" />
               <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
               <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
@@ -170,18 +166,16 @@ export function ResearchFinance({
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
                 return (
-                  <Line
+                  <Bar
                     key={shortName}
-                    type="monotone"
                     dataKey={shortName}
                     name={shortName}
-                    stroke={getColor(universities, shortName)}
-                    strokeWidth={2}
-                    connectNulls={false}
+                    fill={getColor(universities, shortName)}
+                    radius={[3, 3, 0, 0]}
                   />
                 );
               })}
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel
@@ -189,10 +183,11 @@ export function ResearchFinance({
           description={`Reported annual earnings · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
           fileName="edp-earnings"
           data={edp}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={edp} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <BarChart data={edp} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="year" />
               <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
               <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
@@ -200,18 +195,16 @@ export function ResearchFinance({
               {universities.map((university) => {
                 const shortName = university.institute.shortName;
                 return (
-                  <Line
+                  <Bar
                     key={shortName}
-                    type="monotone"
                     dataKey={shortName}
                     name={shortName}
-                    stroke={getColor(universities, shortName)}
-                    strokeWidth={2}
-                    connectNulls={false}
+                    fill={getColor(universities, shortName)}
+                    radius={[3, 3, 0, 0]}
                   />
                 );
               })}
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel
@@ -219,73 +212,34 @@ export function ResearchFinance({
           description="Calendar-year counts; SPPU patent rows were not present in the supplied PDF."
           fileName="patents"
           data={patents}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={patents} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <BarChart data={patents} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="year" />
               <YAxis />
               <Tooltip formatter={(value) => formatNumber(typeof value === "number" ? value : null)} />
               <Legend />
               {universities.flatMap((university) => {
                 const shortName = university.institute.shortName;
-                return (
-                  [
-                    <Line
-                      key={`${shortName}-granted`}
-                      type="monotone"
-                      dataKey={`${shortName} · granted`}
-                      name={`${shortName} · granted`}
-                      stroke={getColor(universities, shortName)}
-                      strokeWidth={2}
-                    />,
-                    <Line
-                      key={`${shortName}-published`}
-                      type="monotone"
-                      dataKey={`${shortName} · published`}
-                      name={`${shortName} · published`}
-                      stroke={getColor(universities, shortName)}
-                      strokeDasharray="5 4"
-                      strokeWidth={1.5}
-                    />,
-                  ]
-                );
-              })}
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-        <ChartPanel
-          title="Capex vs opex"
-          description={`Total by category · ${currencyMode === "crore" ? "Crore" : "Full INR"}`}
-          fileName="capex-opex"
-          data={finance}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={finance} margin={{ top: 16, right: 24, left: 12, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => formatINR(chartAmount(value, currencyMode), currencyMode)} />
-              <Tooltip formatter={(value) => amountTooltip(value, currencyMode)} />
-              <Legend />
-              {universities.flatMap((university) => {
-                const shortName = university.institute.shortName;
-                return (
-                  [
-                    <Bar
-                      key={`${shortName}-capex`}
-                      dataKey={`${shortName} capex`}
-                      name={`${shortName} capex`}
-                      fill={getColor(universities, shortName)}
-                    />,
-                    <Bar
-                      key={`${shortName}-opex`}
-                      dataKey={`${shortName} opex`}
-                      name={`${shortName} opex`}
-                      fill={getColor(universities, shortName)}
-                      fillOpacity={0.52}
-                    />,
-                  ]
-                );
+                return [
+                  <Bar
+                    key={`${shortName}-granted`}
+                    dataKey={`${shortName} · granted`}
+                    name={`${shortName} · granted`}
+                    fill={getColor(universities, shortName)}
+                    radius={[3, 3, 0, 0]}
+                  />,
+                  <Bar
+                    key={`${shortName}-published`}
+                    dataKey={`${shortName} · published`}
+                    name={`${shortName} · published`}
+                    fill={getColor(universities, shortName)}
+                    fillOpacity={0.45}
+                    radius={[3, 3, 0, 0]}
+                  />,
+                ];
               })}
             </BarChart>
           </ResponsiveContainer>

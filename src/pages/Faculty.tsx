@@ -156,6 +156,7 @@ export function Faculty({ universities }: FacultyProps) {
           description="Normalized designation groups, colored consistently by university."
           fileName="faculty-designation"
           data={designationRows}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={designationRows} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
@@ -170,6 +171,7 @@ export function Faculty({ universities }: FacultyProps) {
                   dataKey={university.institute.shortName}
                   name={university.institute.shortName}
                   fill={getColor(universities, university.institute.shortName)}
+                  radius={[3, 3, 0, 0]}
                 />
               ))}
             </BarChart>
@@ -180,6 +182,7 @@ export function Faculty({ universities }: FacultyProps) {
           description="Association type is kept from the PDF; non-regular/non-contract rows appear under Other."
           fileName="faculty-association"
           data={associationRows}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={associationRows} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
@@ -194,6 +197,7 @@ export function Faculty({ universities }: FacultyProps) {
                   dataKey={university.institute.shortName}
                   name={university.institute.shortName}
                   fill={getColor(universities, university.institute.shortName)}
+                  radius={[3, 3, 0, 0]}
                 />
               ))}
             </BarChart>
@@ -204,6 +208,7 @@ export function Faculty({ universities }: FacultyProps) {
           description="Extracted faculty rows only; unavailable row sets remain blank."
           fileName="faculty-gender"
           data={genderRows}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={genderRows} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
@@ -212,8 +217,8 @@ export function Faculty({ universities }: FacultyProps) {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="male" name="Male" fill="#16283f" />
-              <Bar dataKey="female" name="Female" fill="#db5a22" />
+              <Bar dataKey="male" name="Male" fill="#16283f" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="female" name="Female" fill="#db5a22" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -222,6 +227,7 @@ export function Faculty({ universities }: FacultyProps) {
           description="Age bands from individual faculty rows."
           fileName="faculty-age-distribution"
           data={ageRows}
+          className="chart-panel-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={ageRows} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
@@ -236,6 +242,7 @@ export function Faculty({ universities }: FacultyProps) {
                   dataKey={university.institute.shortName}
                   name={university.institute.shortName}
                   fill={getColor(universities, university.institute.shortName)}
+                  radius={[3, 3, 0, 0]}
                 />
               ))}
             </BarChart>

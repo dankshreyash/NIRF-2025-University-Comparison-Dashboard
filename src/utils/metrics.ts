@@ -8,14 +8,14 @@ import type {
 import { CRORE, type CurrencyMode } from "./format";
 
 export const UNIVERSITY_COLORS = [
-  "#16283f",
-  "#db5a22",
-  "#eca23c",
-  "#5f7c96",
-  "#b44c34",
-  "#788a5b",
-  "#7b6178",
-  "#425466",
+  "#1e5aa8",
+  "#e05822",
+  "#d97706",
+  "#0284c7",
+  "#c53030",
+  "#16a34a",
+  "#9333ea",
+  "#475569",
 ];
 
 export function isNumber(value: Numeric | undefined): value is number {
@@ -58,6 +58,24 @@ export function facultyStudentRatio(university: UniversityData): string | null {
     return null;
   }
   return `${(students / faculty).toFixed(1)}:1`;
+}
+
+export function numericStudentFacultyRatio(university: UniversityData): number | null {
+  const students = totalStudents(university);
+  const faculty = facultyCount(university);
+  if (!isNumber(students) || !isNumber(faculty) || faculty === 0) {
+    return null;
+  }
+  return students / faculty;
+}
+
+export function phdSharePercent(university: UniversityData): number | null {
+  const phd = phdStudentCount(university);
+  const students = totalStudents(university);
+  if (!isNumber(phd) || !isNumber(students) || students === 0) {
+    return null;
+  }
+  return (phd / students) * 100;
 }
 
 export function totalSponsoredResearch(university: UniversityData): Numeric {

@@ -5,8 +5,6 @@ import {
   CartesianGrid,
   Cell,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -85,29 +83,28 @@ export function Placement({
               description="Placed / graduated in minimum stipulated time, aggregated across program types."
               fileName="placement-rate-trend"
               data={rates}
+              className="chart-panel-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={rates} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                <BarChart data={rates} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="year" />
-                  <YAxis unit="%" />
+                  <YAxis unit="%" domain={[0, 100]} />
                   <Tooltip formatter={(value) => formatPercent(typeof value === "number" ? value : null)} />
                   <Legend />
                   {universities.map((university) => {
                     const shortName = university.institute.shortName;
                     return (
-                      <Line
+                      <Bar
                         key={shortName}
-                        type="monotone"
                         dataKey={shortName}
                         name={shortName}
-                        stroke={getColor(universities, shortName)}
-                        strokeWidth={2}
-                        connectNulls={false}
+                        fill={getColor(universities, shortName)}
+                        radius={[3, 3, 0, 0]}
                       />
                     );
                   })}
-                </LineChart>
+                </BarChart>
               </ResponsiveContainer>
             </ChartPanel>
             <ChartPanel
@@ -115,10 +112,11 @@ export function Placement({
               description={`${selectedProgram || "No program selected"} · values are INR as submitted.`}
               fileName="placement-median-salary"
               data={salaries}
+              className="chart-panel-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={salaries} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                <BarChart data={salaries} margin={{ top: 16, right: 24, left: 16, bottom: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="year" />
                   <YAxis tickFormatter={(value) => formatINR(typeof value === "number" ? value : null, currencyMode)} />
                   <Tooltip formatter={(value) => salaryTooltip(value, currencyMode)} />
@@ -126,18 +124,16 @@ export function Placement({
                   {universities.map((university) => {
                     const shortName = university.institute.shortName;
                     return (
-                      <Line
+                      <Bar
                         key={shortName}
-                        type="monotone"
                         dataKey={shortName}
                         name={shortName}
-                        stroke={getColor(universities, shortName)}
-                        strokeWidth={2}
-                        connectNulls={false}
+                        fill={getColor(universities, shortName)}
+                        radius={[3, 3, 0, 0]}
                       />
                     );
                   })}
-                </LineChart>
+                </BarChart>
               </ResponsiveContainer>
             </ChartPanel>
             <ChartPanel
@@ -145,6 +141,7 @@ export function Placement({
               description={`${selectedProgram || "No program selected"} · summed over the selected year scope.`}
               fileName="placement-higher-studies"
               data={higherStudies}
+              className="chart-panel-full"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={higherStudies} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>

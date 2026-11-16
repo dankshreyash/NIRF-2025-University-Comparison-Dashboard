@@ -5,42 +5,84 @@
 :root {
   font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
-  color: #16283f;
-  background: #f5f3ee;
+  color: #142334;
+  background: #f4f1ea;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --font-body: "Inter Variable", system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans Variable", system-ui, sans-serif;
-  --page: #f5f3ee;
-  --panel: #fffdfa;
-  --panel-subtle: #f8f4ec;
-  --text: #16283f;
-  --muted: #66717c;
-  --border: #e5ddd1;
+
+  /* Surfaces & Contrast */
+  --page: #f4f1ea;
+  --panel: #ffffff;
+  --panel-subtle: #f8f6f0;
+  --panel-muted: #ece6dc;
+  --text: #142334;
+  --text-secondary: #475569;
+  --muted: #64748b;
+  --border: #dfd7c9;
+  --border-light: #ece6dc;
+  --border-focus: #db5a22;
+
+  /* Brand & Accents */
   --accent: #db5a22;
   --accent-soft: #fff0e6;
-  --primary: #16283f;
-  --positive: #28765e;
-  --negative: #bc4734;
-  --shadow: 0 2px 12px rgba(22, 40, 63, 0.07);
+  --primary: #142334;
+  --positive: #16805b;
+  --positive-bg: #ecfdf5;
+  --positive-border: #a7f3d0;
+  --negative: #c53030;
+  --negative-bg: #fef2f2;
+
+  /* Design Tokens: Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Design Tokens: Shadows */
+  --shadow-sm: 0 1px 3px rgba(20, 35, 52, 0.05), 0 1px 2px rgba(20, 35, 52, 0.03);
+  --shadow: 0 2px 10px rgba(20, 35, 52, 0.06);
+  --shadow-md: 0 4px 16px rgba(20, 35, 52, 0.08);
+  --shadow-hover: 0 8px 24px rgba(20, 35, 52, 0.12);
+
+  /* Element specifics */
+  --ring-track: #e6dfd4;
+  --bar-track: #ebe5dc;
 }
 
 :root.dark {
   color-scheme: dark;
-  color: #f5f0e7;
-  background: #111d2b;
-  --page: #111d2b;
-  --panel: #19293a;
-  --panel-subtle: #203246;
-  --text: #f5f0e7;
-  --muted: #b2b7ba;
-  --border: #35485a;
+  color: #f1f5f9;
+  background: #0d1520;
+  --page: #0d1520;
+  --panel: #132030;
+  --panel-subtle: #192a3e;
+  --panel-muted: #20354c;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --muted: #94a3b8;
+  --border: #25394e;
+  --border-light: #1c2e42;
+  --border-focus: #f08a4b;
+
   --accent: #f08a4b;
-  --accent-soft: #3a2b27;
-  --primary: #db5a22;
-  --positive: #79c5a5;
-  --negative: #ff9b83;
-  --shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  --accent-soft: #382822;
+  --primary: #f08a4b;
+  --positive: #34d399;
+  --positive-bg: rgba(6, 78, 59, 0.35);
+  --positive-border: #065f46;
+  --negative: #f87171;
+  --negative-bg: rgba(69, 10, 10, 0.35);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.6);
+
+  --ring-track: #22374c;
+  --bar-track: #1e3247;
 }
 
 * {
@@ -491,71 +533,438 @@ summary:focus-visible {
   border-radius: 50%;
 }
 
+/* ==========================================================================
+   1. Summary Strip (Headline Stat Cards)
+   ========================================================================== */
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+.summary-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-icon-students {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284c7;
+}
+
+.summary-icon-research {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.summary-icon-cgpa {
+  background: rgba(224, 88, 34, 0.12);
+  color: #e05822;
+}
+
+.summary-icon-ratio {
+  background: rgba(147, 51, 234, 0.12);
+  color: #9333ea;
+}
+
+.summary-card-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summary-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.summary-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.summary-subtext {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   2. University Cards Grid & Visual Presentation
+   ========================================================================== */
 .university-kpis {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .university-kpi-card {
   min-width: 0;
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top-width: 4px;
+  border-top-style: solid;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  animation: cardFadeIn 0.4s ease-out both;
+}
+
+.university-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .university-kpi-title {
-  gap: 9px;
-  margin-bottom: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.university-kpi-title > div {
+.university-name-box {
   min-width: 0;
+  flex: 1;
 }
 
-.university-kpi-title strong,
-.university-kpi-title span {
+.university-short-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.university-short-wrapper strong {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.university-full-name {
   display: block;
-}
-
-.university-kpi-title strong {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.university-kpi-title > div > span {
-  font-family: var(--font-display);
-}
-
-.university-kpi-title span {
-  max-width: 100%;
-  margin-top: 2px;
-  overflow: hidden;
+  font-size: 11px;
   color: var(--muted);
-  font-size: 10px;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-top: 1px;
 }
 
-.university-kpi-grid {
+/* Hero Metrics Row (Students & NAAC CGPA) */
+.hero-metrics-row {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hero-metric-tile {
+  background: var(--panel-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 82px;
+}
+
+.hero-metric-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.hero-metric-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 2px;
+}
+
+.hero-metric-subtext {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.hero-cgpa-tile {
+  align-items: stretch;
+}
+
+.hero-cgpa-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-top: 2px;
+}
+
+/* CGPA Progress Ring */
+.cgpa-ring-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+}
+
+.cgpa-ring-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cgpa-ring-track {
+  stroke: var(--ring-track);
+}
+
+.cgpa-ring-fill {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cgpa-ring-value-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.cgpa-ring-val {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.cgpa-ring-scale {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* Secondary Metrics Grid */
+.secondary-metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
-.university-kpi-grid .metric-card {
-  padding: 10px;
+.sec-metric-tile {
+  background: var(--panel-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
 }
 
-.university-kpi-grid .metric-card strong {
-  font-size: 14.5px;
+.sec-metric-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.university-kpi-grid .metric-card strong[title="Not reported"] {
+.sec-metric-value {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Missing values */
+.metric-not-reported {
+  display: inline-block;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+/* ==========================================================================
+   3. Key Takeaways Card (8th Card in Grid)
+   ========================================================================== */
+.takeaways-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top-width: 4px;
+  border-top-color: var(--accent) !important;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.takeaways-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.takeaways-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.takeaways-header strong {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.takeaways-sub {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.takeaways-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.takeaway-item {
+  background: var(--panel-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+}
+
+.takeaway-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 3px;
+}
+
+.takeaway-badge {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(219, 90, 34, 0.12);
+  color: var(--accent);
+}
+
+.takeaway-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.takeaway-text {
+  margin: 0;
   font-size: 11px;
-}
-
-.university-kpi-grid .metric-label {
-  font-size: 9px;
+  line-height: 1.42;
+  color: var(--text-secondary);
 }
 
 .recharts-text,
@@ -579,6 +988,18 @@ summary:focus-visible {
 
 .chart-panel {
   min-height: 385px;
+}
+
+.chart-panel-full {
+  grid-column: 1 / -1;
+}
+
+.chart-panel-tall {
+  min-height: 600px;
+}
+
+.chart-panel-tall .chart-area {
+  height: 540px;
 }
 
 .chart-panel .panel-heading {
@@ -631,14 +1052,15 @@ summary:focus-visible {
 }
 
 .table-panel {
-  padding-bottom: 10px;
+  padding-bottom: 12px;
 }
 
 .table-scroll {
   width: 100%;
-  overflow: auto;
+  overflow-x: auto;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-md);
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -650,17 +1072,19 @@ table {
 
 th,
 td {
-  padding: 10px 11px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--border);
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 th {
   position: sticky;
   top: 0;
+  z-index: 2;
   color: var(--muted);
   background: var(--panel-subtle);
-  font-size: 9px;
+  backdrop-filter: blur(8px);
+  font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -671,23 +1095,154 @@ tr:last-child td {
   border-bottom: 0;
 }
 
+tbody tr {
+  transition: background 0.15s ease;
+}
+
 tbody tr:hover {
   background: var(--panel-subtle);
 }
 
-.table-university {
-  gap: 8px;
-  min-width: 180px;
+.th-index,
+.td-index {
+  width: 40px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.sort-button {
-  padding: 0;
-  color: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  letter-spacing: inherit;
+.table-university {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.table-uni-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   text-align: left;
-  text-transform: inherit;
+}
+
+.table-uni-info strong {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.table-uni-full {
+  font-size: 10px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
+}
+
+/* Sort button header */
+button.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  color: inherit;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+button.sort-button:hover {
+  background: rgba(219, 90, 34, 0.08);
+  color: var(--text);
+}
+
+button.sort-button.sort-button-active {
+  color: var(--accent);
+  background: rgba(219, 90, 34, 0.12);
+  border-color: rgba(219, 90, 34, 0.25);
+}
+
+button.sort-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.sort-arrow {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* Inline horizontal data bars & best cell highlight */
+td.td-best-val {
+  background: rgba(22, 128, 91, 0.06);
+}
+
+tbody tr:hover td.td-best-val {
+  background: rgba(22, 128, 91, 0.12);
+}
+
+.table-bar-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 95px;
+}
+
+.table-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  width: 100%;
+}
+
+.top-badge {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--positive);
+  background: var(--positive-bg);
+  border: 1px solid var(--positive-border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  line-height: 1.2;
+}
+
+.table-number {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.table-number-muted {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.table-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bar-track);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.table-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.35s ease;
 }
 
 .compact-table {
@@ -953,6 +1508,35 @@ tbody tr:hover {
   color: var(--accent);
 }
 
+.nav-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1100px) {
+  .summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .university-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chart-area .recharts-tooltip-wrapper,
+  .compare-radar .recharts-tooltip-wrapper {
+    left: auto !important;
+    right: 0 !important;
+    max-width: calc(100% - 8px);
+    transform: translateY(8px) !important;
+  }
+
+  .chart-area .recharts-default-tooltip,
+  .compare-radar .recharts-default-tooltip {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (max-width: 960px) {
   .app-shell {
     padding-right: 20px;
@@ -975,19 +1559,17 @@ tbody tr:hover {
   }
 }
 
-@media (max-width: 1100px) {
-  .chart-area .recharts-tooltip-wrapper,
-  .compare-radar .recharts-tooltip-wrapper {
-    left: auto !important;
-    right: 0 !important;
-    max-width: calc(100% - 8px);
-    transform: translateY(8px) !important;
+@media (max-width: 640px) {
+  .summary-strip {
+    grid-template-columns: 1fr;
   }
 
-  .chart-area .recharts-default-tooltip,
-  .compare-radar .recharts-default-tooltip {
-    max-width: 100%;
-    overflow-wrap: anywhere;
+  .university-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .secondary-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1040,12 +1622,8 @@ tbody tr:hover {
     width: 100%;
   }
 
-  .university-kpis {
+  .hero-metrics-row {
     grid-template-columns: 1fr;
-  }
-
-  .university-kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .chart-panel {
@@ -1084,5 +1662,16 @@ tbody tr:hover {
 
   .compare-radar {
     height: 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .university-kpi-card,
+  .takeaways-card,
+  .summary-card,
+  .cgpa-ring-fill,
+  .table-bar-fill {
+    animation: none !important;
+    transition: none !important;
   }
 }

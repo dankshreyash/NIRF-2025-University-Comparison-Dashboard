@@ -63,6 +63,7 @@ export function Students({ universities }: StudentsProps) {
           description="Male and female headcounts from the reported program rows."
           fileName="students-gender-split"
           data={gender}
+          className="chart-panel-full chart-panel-tall"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={gender} layout="vertical" margin={{ left: 16, right: 24 }}>
@@ -81,6 +82,7 @@ export function Students({ universities }: StudentsProps) {
           description="In-state, out-of-state, and international student counts."
           fileName="students-origin"
           data={regions}
+          className="chart-panel-full chart-panel-tall"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={regions} layout="vertical" margin={{ left: 16, right: 24 }}>
