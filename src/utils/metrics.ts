@@ -658,7 +658,33 @@ export function comparisonMetrics(universities: UniversityData[]) {
   return { metrics, radar };
 }
 
-const FIXED_COLOR_ORDER = ["BAMU", "COEP", "KBCNMU", "MU", "RTMNU", "SGBAU", "SPPU"];
+export const FIXED_UNIVERSITY_ORDER = [
+  "MU",
+  "SPPU",
+  "COEP",
+  "KBCNMU",
+  "BAMU",
+  "RTMNU",
+  "SGBAU",
+] as const;
+
+export function sortUniversities<T extends { institute: { shortName: string } }>(
+  universities: T[],
+): T[] {
+  return [...universities].sort((a, b) => {
+    const indexA = (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(
+      a.institute.shortName,
+    );
+    const indexB = (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(
+      b.institute.shortName,
+    );
+    const orderA = indexA === -1 ? 999 : indexA;
+    const orderB = indexB === -1 ? 999 : indexB;
+    return orderA - orderB;
+  });
+}
+
+const FIXED_COLOR_ORDER: readonly string[] = FIXED_UNIVERSITY_ORDER;
 
 export function getColor(_universities: UniversityData[], shortName: string): string {
   const index = FIXED_COLOR_ORDER.indexOf(shortName);

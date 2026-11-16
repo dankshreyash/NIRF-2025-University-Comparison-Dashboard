@@ -15,6 +15,7 @@ import {
 } from "../utils/metrics";
 
 type SortKey =
+  | "order"
   | "students"
   | "faculty"
   | "phd"
@@ -28,38 +29,42 @@ interface OverviewProps {
 }
 
 export function Overview({ universities, currencyMode }: OverviewProps) {
-  const [sortKey, setSortKey] = useState<SortKey>("students");
-  const [descending, setDescending] = useState(true);
+  const [sortKey, setSortKey] = useState<SortKey | null>("order");
+  const [descending, setDescending] = useState(false);
 
-  const rows = useMemo(
-    () =>
-      universities
-        .map((university) => ({
-          university,
-          students: totalStudents(university),
-          faculty: facultyCount(university),
-          phd: phdStudentCount(university),
-          cgpa: university.naac.cgpa,
-          research: totalSponsoredResearch(university),
-          patents: totalPatentsGranted(university),
-        }))
-        .sort((left, right) => {
-          const a = left[sortKey];
-          const b = right[sortKey];
-          if (a == null && b == null) return 0;
-          if (a == null) return 1;
-          if (b == null) return -1;
-          const difference = a - b;
-          return descending ? -difference : difference;
-        }),
-    [descending, sortKey, universities],
-  );
+  const rows = useMemo(() => {
+    const list = universities.map((university, index) => ({
+      university,
+      order: index + 1,
+      students: totalStudents(university),
+      faculty: facultyCount(university),
+      phd: phdStudentCount(university),
+      cgpa: university.naac.cgpa,
+      research: totalSponsoredResearch(university),
+      patents: totalPatentsGranted(university),
+    }));
+
+    if (!sortKey || sortKey === "order") {
+      return descending ? [...list].reverse() : list;
+    }
+
+    return list.sort((left, right) => {
+      const a = left[sortKey];
+      const b = right[sortKey];
+      if (a == null && b == null) return 0;
+      if (a == null) return 1;
+      if (b == null) return -1;
+      const difference = (a as number) - (b as number);
+      return descending ? -difference : difference;
+    });
+  }, [descending, sortKey, universities]);
 
   function sortBy(key: SortKey) {
-    if (sortKey === key) setDescending((value) => !value);
-    else {
+    if (sortKey === key) {
+      setDescending((value) => !value);
+    } else {
       setSortKey(key);
-      setDescending(true);
+      setDescending(key === "order" ? false : true);
     }
   }
 
@@ -128,7 +133,7 @@ export function Overview({ universities, currencyMode }: OverviewProps) {
               <table>
                 <thead>
                   <tr>
-                    <th>Order</th>
+                    <th>{sortLabel("Order", "order")}</th>
                     <th>University</th>
                     <th>{sortLabel("Students", "students")}</th>
                     <th>{sortLabel("Faculty", "faculty")}</th>
@@ -139,9 +144,9 @@ export function Overview({ universities, currencyMode }: OverviewProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((row, index) => (
+                  {rows.map((row) => (
                     <tr key={row.university.institute.shortName}>
-                      <td>{index + 1}</td>
+                      <td>{row.order}</td>
                       <td>
                         <span className="table-university">
                           <span className="color-dot" style={{ backgroundColor: getColor(universities, row.university.institute.shortName) }} />

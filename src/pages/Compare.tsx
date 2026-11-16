@@ -16,6 +16,7 @@ import { formatINR, type CurrencyMode } from "../utils/format";
 import {
   comparisonMetrics,
   facultyCount,
+  FIXED_UNIVERSITY_ORDER,
   formatNumber,
   formatPercent,
   getColor,
@@ -46,7 +47,14 @@ export function Compare({ universities, currencyMode }: CompareProps) {
     if (picked.includes(shortName)) {
       setPicked((current) => current.filter((value) => value !== shortName));
     } else if (picked.length < 4) {
-      setPicked((current) => [...current, shortName]);
+      setPicked((current) => {
+        const next = [...current, shortName];
+        return next.sort(
+          (a, b) =>
+            (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(a) -
+            (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(b),
+        );
+      });
     }
   }
 

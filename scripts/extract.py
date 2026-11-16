@@ -25,6 +25,16 @@ KNOWN_SHORT_NAMES = {
     "IR-O-U-0323": "SPPU",
 }
 
+FIXED_UNIVERSITY_ORDER = [
+    "MU",
+    "SPPU",
+    "COEP",
+    "KBCNMU",
+    "BAMU",
+    "RTMNU",
+    "SGBAU",
+]
+
 PROGRAM_RE = re.compile(
     r"\b(?:UG|PG)\s*\[\s*\d+\s*Years?\s*Program\(s\)\s*\]"
     r"|\bPG\s*-\s*Integrated(?:\s*\[\s*\d+\s*Years?\s*Program\(s\)\s*\])?",
@@ -935,6 +945,15 @@ def main() -> int:
             f"{len(data['faculty']['rows'])} faculty rows, "
             f"{len(data['dataWarnings'])} extraction warnings -> {destination}"
         )
+
+    def university_order(item: dict[str, Any]) -> int:
+        short = str(item.get("institute", {}).get("shortName", ""))
+        try:
+            return FIXED_UNIVERSITY_ORDER.index(short)
+        except ValueError:
+            return 999
+
+    universities.sort(key=university_order)
 
     combined = {
         "schemaVersion": 1,

@@ -8,6 +8,7 @@ import { ResearchFinance } from "./pages/ResearchFinance";
 import { Students } from "./pages/Students";
 import type { CombinedData, UniversityData } from "./types";
 import type { CurrencyMode } from "./utils/format";
+import { sortUniversities } from "./utils/metrics";
 
 type PageId =
   | "overview"
@@ -50,7 +51,10 @@ export default function App() {
           throw new Error("The combined data file contains no university records.");
         }
         if (active) {
-          setData(result);
+          setData({
+            ...result,
+            universities: sortUniversities(result.universities),
+          });
         }
       })
       .catch((error: unknown) => {

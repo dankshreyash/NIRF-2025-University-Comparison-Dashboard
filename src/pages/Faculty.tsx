@@ -37,6 +37,7 @@ const PAGE_SIZE = 20;
 
 export function Faculty({ universities }: FacultyProps) {
   const [search, setSearch] = useState("");
+  const [universityFilter, setUniversityFilter] = useState("All universities");
   const [designation, setDesignation] = useState("All designations");
   const [association, setAssociation] = useState("All associations");
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,13 +74,21 @@ export function Faculty({ universities }: FacultyProps) {
       const type = associationGroup(row.associationType);
       const matchesAssociation =
         association === "All associations" || type === association;
-      return matchesSearch && matchesDesignation && matchesAssociation;
+      const matchesUniversity =
+        universityFilter === "All universities" ||
+        row.university === universityFilter;
+      return (
+        matchesSearch &&
+        matchesDesignation &&
+        matchesAssociation &&
+        matchesUniversity
+      );
     });
-  }, [allRows, association, designation, search]);
+  }, [allRows, association, designation, search, universityFilter]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, designation, association, universities]);
+  }, [search, universityFilter, designation, association, universities]);
 
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const visibleRows = filteredRows.slice(
@@ -250,6 +259,20 @@ export function Faculty({ universities }: FacultyProps) {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
+          </label>
+          <label className="select-field">
+            University
+            <select
+              value={universityFilter}
+              onChange={(event) => setUniversityFilter(event.target.value)}
+            >
+              <option>All universities</option>
+              {universities.map((item) => (
+                <option key={item.institute.shortName} value={item.institute.shortName}>
+                  {item.institute.shortName} – {item.institute.name}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="select-field">
             Designation

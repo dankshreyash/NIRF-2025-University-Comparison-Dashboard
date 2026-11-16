@@ -1,4 +1,5 @@
 import type { UniversityData } from "../types";
+import { FIXED_UNIVERSITY_ORDER, sortUniversities } from "../utils/metrics";
 import { UniversityLogo } from "./UniversityLogo";
 
 interface UniversitySelectorProps {
@@ -8,14 +9,21 @@ interface UniversitySelectorProps {
 }
 
 export function UniversitySelector({
-  universities,
+  universities: rawUniversities,
   selected,
   onChange,
 }: UniversitySelectorProps) {
+  const universities = sortUniversities(rawUniversities);
+
   function toggle(shortName: string) {
-    const next = selected.includes(shortName)
+    const rawNext = selected.includes(shortName)
       ? selected.filter((item) => item !== shortName)
       : [...selected, shortName];
+    const next = rawNext.sort(
+      (a, b) =>
+        (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(a) -
+        (FIXED_UNIVERSITY_ORDER as readonly string[]).indexOf(b),
+    );
     onChange(next);
   }
 
