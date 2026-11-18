@@ -4374,5 +4374,12 @@
       }
     ]
   },
+  "officialMetrics": {
+    "studentCount": 4040,
+    "scopusDocuments": 4689,
+    "cpp": 10.44,
+    "averageSalaryLpa": 8.34,
+    "grantedPatents": 43
+  },
   "dataWarnings": []
 }

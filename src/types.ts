@@ -136,6 +136,13 @@ export interface UniversityData {
     reportedCount: Numeric;
     rows: FacultyMember[];
   };
+  officialMetrics?: {
+    studentCount?: number;
+    scopusDocuments?: number;
+    cpp?: number;
+    averageSalaryLpa?: number;
+    grantedPatents?: number;
+  };
   dataWarnings: string[];
 }
 

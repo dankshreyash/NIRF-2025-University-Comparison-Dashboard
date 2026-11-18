@@ -448,7 +448,7 @@ export function Overview({ universities, currencyMode: _currencyMode }: Overview
                         Ph.D. Share
                       </span>
                       <strong className="sec-metric-value">
-                        {phdShare != null ? formatPercent(phdShare, 1) : <span className="metric-not-reported">Not reported</span>}
+                        {phdShare != null ? formatPercent(phdShare, 2) : <span className="metric-not-reported">Not reported</span>}
                       </strong>
                     </div>
                   </div>

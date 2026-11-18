@@ -30,6 +30,9 @@ export function sumComplete(values: Numeric[]): Numeric {
 }
 
 export function totalStudents(university: UniversityData): Numeric {
+  if (university.officialMetrics?.studentCount != null) {
+    return university.officialMetrics.studentCount;
+  }
   // Total enrollment is the sum of the reported, mutually exclusive program-type totals.
   return sumComplete(university.studentStrength.map((row) => row.total));
 }
@@ -57,7 +60,7 @@ export function facultyStudentRatio(university: UniversityData): string | null {
   if (!isNumber(students) || !isNumber(faculty) || faculty === 0) {
     return null;
   }
-  return `${(students / faculty).toFixed(1)}:1`;
+  return `${(students / faculty).toFixed(2)}:1`;
 }
 
 export function numericStudentFacultyRatio(university: UniversityData): number | null {
