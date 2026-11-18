@@ -386,7 +386,8 @@
     "valid": true,
     "validFrom": "2022-08-30",
     "validUpto": "2027-08-29",
-    "cgpa": 3.09
+    "cgpa": 3.09,
+    "grade": "A"
   },
   "policies": {
     "multipleEntryExit": true,

@@ -1,5 +1,6 @@
 import { PageHeader } from "../components/PageHeader";
 import type { UniversityData } from "../types";
+import { getNaacGrade } from "../utils/metrics";
 
 interface InfrastructureProps {
   universities: UniversityData[];
@@ -46,6 +47,7 @@ export function Infrastructure({ universities }: InfrastructureProps) {
                 </div>
                 <dl className="detail-list">
                   <div><dt>Institute</dt><dd>{university.institute.name}</dd></div>
+                  <div><dt>NAAC Grade</dt><dd><strong>{getNaacGrade(university) ?? "Not reported"}</strong></dd></div>
                   <div><dt>NAAC CGPA</dt><dd>{university.naac.cgpa ?? "Not reported"}</dd></div>
                   <div><dt>Valid from</dt><dd>{university.naac.validFrom ?? "Not reported"}</dd></div>
                   <div><dt>Valid upto</dt><dd>{university.naac.validUpto ?? "Not reported"}</dd></div>

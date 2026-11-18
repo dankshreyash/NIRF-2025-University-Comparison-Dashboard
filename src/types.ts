@@ -125,6 +125,7 @@ export interface UniversityData {
     validFrom: string | null;
     validUpto: string | null;
     cgpa: Numeric;
+    grade?: string | null;
   };
   policies: Record<string, boolean | null>;
   sustainability: Array<{

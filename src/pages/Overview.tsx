@@ -9,6 +9,7 @@ import {
   formatNumber,
   formatPercent,
   getColor,
+  getNaacGrade,
   numericStudentFacultyRatio,
   phdSharePercent,
   phdStudentCount,
@@ -353,6 +354,7 @@ export function Overview({ universities, currencyMode: _currencyMode }: Overview
               const patents = totalPatentsGranted(university);
               const ratio = facultyStudentRatio(university);
               const phdShare = phdSharePercent(university);
+              const naacGradeVal = getNaacGrade(university);
 
               return (
                 <article
@@ -388,7 +390,10 @@ export function Overview({ universities, currencyMode: _currencyMode }: Overview
                     </div>
 
                     <div className="hero-metric-tile hero-cgpa-tile">
-                      <span className="hero-metric-label">NAAC CGPA</span>
+                      <div className="hero-cgpa-top">
+                        <span className="hero-metric-label">NAAC CGPA</span>
+                        {naacGradeVal && <span className="hero-grade-badge">Grade {naacGradeVal}</span>}
+                      </div>
                       <div className="hero-cgpa-content">
                         <CgpaProgressRing cgpa={cgpa} color={accentColor} />
                       </div>

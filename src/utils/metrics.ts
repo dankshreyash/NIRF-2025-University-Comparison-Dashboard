@@ -78,6 +78,22 @@ export function phdSharePercent(university: UniversityData): number | null {
   return (phd / students) * 100;
 }
 
+export function getNaacGrade(university: UniversityData): string | null {
+  if (university.naac.grade) {
+    return university.naac.grade;
+  }
+  const cgpa = university.naac.cgpa;
+  if (!isNumber(cgpa)) return null;
+  if (cgpa >= 3.51) return "A++";
+  if (cgpa >= 3.26) return "A+";
+  if (cgpa >= 3.01) return "A";
+  if (cgpa >= 2.76) return "B++";
+  if (cgpa >= 2.51) return "B+";
+  if (cgpa >= 2.01) return "B";
+  if (cgpa >= 1.51) return "C";
+  return "D";
+}
+
 export function totalSponsoredResearch(university: UniversityData): Numeric {
   // The overview total covers all three reported financial years.
   return sumComplete(

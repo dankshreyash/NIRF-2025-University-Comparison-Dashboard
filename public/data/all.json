@@ -606,7 +606,8 @@
         "valid": true,
         "validFrom": "2021-08-31",
         "validUpto": "2028-08-30",
-        "cgpa": 3.65
+        "cgpa": 3.65,
+        "grade": "A++"
       },
       "policies": {
         "multipleEntryExit": true,
@@ -9224,7 +9225,8 @@
         "valid": true,
         "validFrom": "2017-02-22",
         "validUpto": "2025-02-20",
-        "cgpa": 3.6
+        "cgpa": 3.6,
+        "grade": "A++"
       },
       "policies": {
         "multipleEntryExit": true,
@@ -9599,7 +9601,8 @@
         "valid": true,
         "validFrom": "2023-01-10",
         "validUpto": "2028-01-10",
-        "cgpa": 3.44
+        "cgpa": 3.44,
+        "grade": "A+"
       },
       "policies": {
         "multipleEntryExit": false,
@@ -14049,7 +14052,8 @@
         "valid": true,
         "validFrom": "2022-08-30",
         "validUpto": "2027-08-29",
-        "cgpa": 3.09
+        "cgpa": 3.09,
+        "grade": "A"
       },
       "policies": {
         "multipleEntryExit": true,
@@ -17317,7 +17321,8 @@
         "valid": true,
         "validFrom": "2024-10-29",
         "validUpto": "2029-10-29",
-        "cgpa": 3.38
+        "cgpa": 3.38,
+        "grade": "A+"
       },
       "policies": {
         "multipleEntryExit": true,
@@ -22783,7 +22788,8 @@
         "valid": true,
         "validFrom": "2021-09-07",
         "validUpto": "2026-09-06",
-        "cgpa": 3.01
+        "cgpa": 3.01,
+        "grade": "A"
       },
       "policies": {
         "multipleEntryExit": true,
@@ -26877,7 +26883,8 @@
         "valid": true,
         "validFrom": "2022-09-27",
         "validUpto": "2027-09-26",
-        "cgpa": 2.96
+        "cgpa": 2.96,
+        "grade": "B++"
       },
       "policies": {
         "multipleEntryExit": true,

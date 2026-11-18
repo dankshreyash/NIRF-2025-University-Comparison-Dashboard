@@ -758,6 +758,27 @@ summary:focus-visible {
   align-items: stretch;
 }
 
+.hero-cgpa-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+
+.hero-grade-badge {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+  background: rgba(22, 128, 91, 0.12);
+  color: var(--positive);
+  border: 1px solid rgba(22, 128, 91, 0.25);
+  line-height: 1.2;
+}
+
 .hero-cgpa-content {
   display: flex;
   align-items: center;
