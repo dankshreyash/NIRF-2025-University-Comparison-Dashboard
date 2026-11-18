@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -19,6 +20,7 @@ import {
   getColor,
   patentSeriesRows,
   totalPatentsGranted,
+  totalPatentsPublished,
   totalSponsoredResearch,
   totalConsultancyAmount,
   totalEdpEarnings,
@@ -41,12 +43,28 @@ export function ResearchFinance({
   const consultancy = consultancyRows(universities, selectedYear, currencyMode);
   const edp = edpEarningsRows(universities, selectedYear, currencyMode);
   const patents = patentSeriesRows(universities, selectedYear);
+  const [patentView, setPatentView] = useState<"byUniversity" | "byYear">("byUniversity");
+
+  const patentsByUniversity = useMemo(() => {
+    return universities.map((u) => {
+      const shortName = u.institute.shortName;
+      const pub = totalPatentsPublished(u);
+      const gr = totalPatentsGranted(u);
+      return {
+        university: shortName,
+        "Patents Published": pub,
+        "Patents Granted": gr,
+      };
+    });
+  }, [universities]);
+
   const researchSummary = universities.map((university) => ({
     university: university.institute.shortName,
     research: totalSponsoredResearch(university),
     consultancy: totalConsultancyAmount(university),
     edp: totalEdpEarnings(university),
-    patents: formatNumber(totalPatentsGranted(university)),
+    patentsGranted: totalPatentsGranted(university),
+    patentsPublished: totalPatentsPublished(university),
   }));
   const activityRows = universities.flatMap((university) => {
     const years = new Set([
@@ -109,8 +127,13 @@ export function ResearchFinance({
               />
               <MetricCard
                 label="Patents (3 yrs)"
-                labelTitle="Patents granted · 3 yrs"
-                value={row.patents}
+                labelTitle="Total patents published and granted · 3 yrs"
+                value={
+                  row.patentsPublished != null || row.patentsGranted != null
+                    ? `${row.patentsPublished ?? 0} pub · ${row.patentsGranted ?? 0} gr`
+                    : "Not reported"
+                }
+                valueTitle={`3-Year Totals: ${row.patentsPublished ?? "Not reported"} Published | ${row.patentsGranted ?? "Not reported"} Granted`}
               />
               {university && (
                 <span className="summary-color" style={{ backgroundColor: getColor(universities, row.university) }} />
@@ -209,42 +232,145 @@ export function ResearchFinance({
         </ChartPanel>
         <ChartPanel
           title="Patents published and granted"
-          description="Calendar-year counts; SPPU patent rows were not present in the supplied PDF."
+          description="Calendar-year counts and 3-year totals; SPPU patent rows were not present in the supplied PDF."
           fileName="patents"
-          data={patents}
-          className="chart-panel-full"
+          data={patentView === "byUniversity" ? patentsByUniversity : patents}
+          className="chart-panel-full chart-panel-tall"
+          actions={
+            <div className="button-group">
+              <button
+                type="button"
+                className={`button button-muted ${patentView === "byUniversity" ? "button-active" : ""}`}
+                onClick={() => setPatentView("byUniversity")}
+              >
+                By University (Total)
+              </button>
+              <button
+                type="button"
+                className={`button button-muted ${patentView === "byYear" ? "button-active" : ""}`}
+                onClick={() => setPatentView("byYear")}
+              >
+                By Calendar Year
+              </button>
+            </div>
+          }
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={patents} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip formatter={(value) => formatNumber(typeof value === "number" ? value : null)} />
-              <Legend />
-              {universities.flatMap((university) => {
-                const shortName = university.institute.shortName;
-                return [
-                  <Bar
-                    key={`${shortName}-granted`}
-                    dataKey={`${shortName} · granted`}
-                    name={`${shortName} · granted`}
-                    fill={getColor(universities, shortName)}
-                    radius={[3, 3, 0, 0]}
-                  />,
-                  <Bar
-                    key={`${shortName}-published`}
-                    dataKey={`${shortName} · published`}
-                    name={`${shortName} · published`}
-                    fill={getColor(universities, shortName)}
-                    fillOpacity={0.45}
-                    radius={[3, 3, 0, 0]}
-                  />,
-                ];
-              })}
-            </BarChart>
+            {patentView === "byUniversity" ? (
+              <BarChart data={patentsByUniversity} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="university" />
+                <YAxis />
+                <Tooltip formatter={(value) => formatNumber(typeof value === "number" ? value : null)} />
+                <Legend />
+                <Bar
+                  dataKey="Patents Published"
+                  name="Patents Published"
+                  fill="#0284c7"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="Patents Granted"
+                  name="Patents Granted"
+                  fill="#db5a22"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            ) : (
+              <BarChart data={patents} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="year" />
+                <YAxis />
+                <Tooltip formatter={(value) => formatNumber(typeof value === "number" ? value : null)} />
+                <Legend />
+                {universities.flatMap((university) => {
+                  const shortName = university.institute.shortName;
+                  return [
+                    <Bar
+                      key={`${shortName}-granted`}
+                      dataKey={`${shortName} · granted`}
+                      name={`${shortName} · granted`}
+                      fill={getColor(universities, shortName)}
+                      radius={[3, 3, 0, 0]}
+                    />,
+                    <Bar
+                      key={`${shortName}-published`}
+                      dataKey={`${shortName} · published`}
+                      name={`${shortName} · published`}
+                      fill={getColor(universities, shortName)}
+                      fillOpacity={0.45}
+                      radius={[3, 3, 0, 0]}
+                    />,
+                  ];
+                })}
+              </BarChart>
+            )}
           </ResponsiveContainer>
         </ChartPanel>
       </div>
+
+      {/* Dedicated Patents Breakdown Table */}
+      <section className="panel table-panel">
+        <div className="panel-heading">
+          <div>
+            <h2>Patents published and granted breakdown</h2>
+            <p>Annual breakdown and 3-year cumulative patent counts for all universities.</p>
+          </div>
+        </div>
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>University</th>
+                <th className="text-right">2021 Pub.</th>
+                <th className="text-right">2021 Gr.</th>
+                <th className="text-right">2022 Pub.</th>
+                <th className="text-right">2022 Gr.</th>
+                <th className="text-right">2023 Pub.</th>
+                <th className="text-right">2023 Gr.</th>
+                <th className="text-right">Total Published</th>
+                <th className="text-right">Total Granted</th>
+              </tr>
+            </thead>
+            <tbody>
+              {universities.map((u) => {
+                const shortName = u.institute.shortName;
+                const row2021 = u.ipR.find((r) => r.calendarYear === "2021");
+                const row2022 = u.ipR.find((r) => r.calendarYear === "2022");
+                const row2023 = u.ipR.find((r) => r.calendarYear === "2023");
+                const totPub = totalPatentsPublished(u);
+                const totGr = totalPatentsGranted(u);
+
+                return (
+                  <tr key={shortName}>
+                    <td>
+                      <div className="table-university">
+                        <span className="color-dot" style={{ backgroundColor: getColor(universities, shortName) }} />
+                        <span className="table-uni-info">
+                          <strong>{shortName}</strong>
+                          <span className="table-uni-full">{u.institute.name}</span>
+                        </span>
+                      </div>
+                    </td>
+                    <td className="text-right">{formatNumber(row2021?.published ?? null)}</td>
+                    <td className="text-right">{formatNumber(row2021?.granted ?? null)}</td>
+                    <td className="text-right">{formatNumber(row2022?.published ?? null)}</td>
+                    <td className="text-right">{formatNumber(row2022?.granted ?? null)}</td>
+                    <td className="text-right">{formatNumber(row2023?.published ?? null)}</td>
+                    <td className="text-right">{formatNumber(row2023?.granted ?? null)}</td>
+                    <td className="text-right">
+                      {totPub != null ? <strong>{formatNumber(totPub)}</strong> : <span className="metric-not-reported">Not reported</span>}
+                    </td>
+                    <td className="text-right">
+                      {totGr != null ? <strong>{formatNumber(totGr)}</strong> : <span className="metric-not-reported">Not reported</span>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <section className="panel table-panel">
         <div className="panel-heading">
           <div>

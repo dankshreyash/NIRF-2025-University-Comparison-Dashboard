@@ -11,6 +11,7 @@ interface ChartPanelProps {
   children: ReactNode;
   emptyMessage?: string;
   className?: string;
+  actions?: ReactNode;
 }
 
 function csvEscape(value: ExportRow[string]): string {
@@ -58,6 +59,7 @@ export function ChartPanel({
   children,
   emptyMessage = "Not reported for the current selection.",
   className = "",
+  actions,
 }: ChartPanelProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -92,6 +94,7 @@ export function ChartPanel({
           {description && <p>{description}</p>}
         </div>
         <div className="export-actions">
+          {actions}
           <button
             className="button button-muted"
             type="button"

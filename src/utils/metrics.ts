@@ -118,6 +118,11 @@ export function totalPatentsGranted(university: UniversityData): Numeric {
   return sumComplete(university.ipR.map((row) => row.granted));
 }
 
+export function totalPatentsPublished(university: UniversityData): Numeric {
+  // Patents published is summed over the three reported calendar years.
+  return sumComplete(university.ipR.map((row) => row.published));
+}
+
 export function placementRate(
   placed: Numeric,
   graduated: Numeric,
